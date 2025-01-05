@@ -2,13 +2,18 @@ import logging
 
 from beanie.odm.fields import PydanticObjectId
 
+from exceptions.httpExceptions.tournamentExceptions import (
+    TournamentNotFoundHTTPException,
+    TournamentForbiddenHTTPException,
+)
 from exceptions.tournamentExceptions import (
-    tournamentNotFoundException,
-    tournamentDeleteForbiddenException,
+    TournamentNotFoundException,
+    TournamentForbiddenException,
 )
 
+
 from fastapi.routing import APIRouter
-from fastapi import status, Depends, Path, Query
+from fastapi import status, Depends, Path
 
 from models.user import UserModel
 from models.tournament import Tournament_response, TournamentModel
@@ -25,8 +30,6 @@ from services.tournamentService import (
 )
 
 from typing import Annotated
-
-from tournament_app_backend.app.services import tournamentService
 
 logging.basicConfig(
     level=logging.INFO,
@@ -63,8 +66,8 @@ async def get_events_by_id(id: PydanticObjectId):
     try:
         logger.info(f"Fetching events of tournament with ID: {id}")
         events = await get_tournament_events_by_id(id)
-    except tournamentNotFoundException:
-        raise tournamentNotFoundException
+    except TournamentNotFoundException:
+        raise TournamentNotFoundHTTPException
     return events
 
 
@@ -75,8 +78,8 @@ async def get_tournament(
     try:
         logger.info(f"Fetching tournament with ID: {id}")
         retrieved_tournament = await get_tourney_id(id)
-    except tournamentNotFoundException:
-        raise tournamentNotFoundException
+    except TournamentNotFoundException:
+        raise TournamentNotFoundHTTPException
     return retrieved_tournament
 
 
@@ -85,7 +88,7 @@ async def create_tournament(
     tournament: TournamentModel, current_user: CurrentUser
 ) -> Tournament_response:
     logger.info(
-        f"Creating event with details:\n{tournament}\nBy user: {current_user.uid}"
+        f"Creating tournament with details:\n{tournament}\nBy user: {current_user.uid}"
     )
     response = await create_tournament_db(tournament, current_user)
     return Tournament_response(tournament_id=response.id)
@@ -99,25 +102,26 @@ async def update_tournament(
 ) -> TournamentModel:
     try:
         logger.info(
-            f"Updating event with ID: {id}, by user: {current_user.uid}\nUpdated event details:\n{updated_tournament}"
+            f"Updating tournament with ID: {id}, by user: {current_user.uid}\nUpdated event details:\n{updated_tournament}"
         )
         response = await update_tournament_by_id(id, updated_tournament, current_user)
-    except tournamentNotFoundException:
-        raise tournamentNotFoundException
-    # TODO: Tournament update forbidden exception
+    except TournamentNotFoundException:
+        raise TournamentNotFoundHTTPException
+    except TournamentForbiddenException:
+        raise TournamentForbiddenHTTPException
     return response
 
 
-@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{id}", status_code=status.HTTP_200_OK)
 async def delete_tournament(
     id: Annotated[PydanticObjectId, Path(title="ID of the tournament to delete")],
     current_user: CurrentUser,
-) -> None:
+) -> str:
     try:
-        logger.info(f"Deleting event with ID: {id}, by user: {current_user.uid}")
+        logger.info(f"Deleting tournament with ID: {id}, by user: {current_user.uid}")
         await delete_tourney_id(id, current_user)
-        return "Event deleted successfully"
-    except tournamentNotFoundException:
-        raise tournamentNotFoundException
-    except tournamentDeleteForbiddenException:
-        raise tournamentDeleteForbiddenException
+        return "Tournament deleted successfully"
+    except TournamentNotFoundException:
+        raise TournamentNotFoundHTTPException
+    except TournamentForbiddenException:
+        raise TournamentForbiddenHTTPException
