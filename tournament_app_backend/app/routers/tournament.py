@@ -1,21 +1,18 @@
-""" (Kaustub)
-TO-DO:
-1. Standaradize code (PEP-8 standards)
-2. Add description and additional details to the API routes
-3. Define exception classes more clearly (HTTPErrors must be handled in a subclass)
-4. Test for unauthorized delete exceptions, 
-"""
+import logging
 
 from beanie.odm.fields import PydanticObjectId
 
-from exceptions.tournamentExceptions import tournamentNotFoundException, tournamentDeleteForbiddenException
+from exceptions.tournamentExceptions import (
+    tournamentNotFoundException,
+    tournamentDeleteForbiddenException,
+)
 
 from fastapi.routing import APIRouter
 from fastapi import status, Depends, Path, Query
 
 from models.user import UserModel
 from models.tournament import Tournament_response, TournamentModel
-from models.notFound import NotFoudModel
+from models.notFound import NotFoundModel
 
 from services.authentication import get_current_user
 from services.tournamentService import (
@@ -24,80 +21,102 @@ from services.tournamentService import (
     update_tournament_by_id,
     get_tourney_id,
     create_tournament_db,
-    delete_tourney_id
+    delete_tourney_id,
 )
 
 from typing import Annotated
 
+from tournament_app_backend.app.services import tournamentService
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(levelname)s: %(message)s",
+    handlers=[logging.StreamHandler()],
+)
+logger = logging.getLogger(__name__)
+
 router = APIRouter(
     prefix="/tournaments",
     tags=["tournaments"],
-    responses={404: NotFoudModel().model_dump()},
+    responses={404: NotFoundModel().model_dump()},
     dependencies=[Depends(get_current_user)],
 )
 
-""" (Kaustub)
-Similar to feature/event-routes, CurrentUser is defined so that code duplication is less
-The user can only access these functions if they have a valid JWT token
-CurrentUser is passed to all functions that require exclusivity of the user
+"""
+  Couldn't really find a way of getting the route dependency into every
+  path operation function, so there's a little bit of code duplication
+  here.
+  https://github.com/tiangolo/fastapi/discussions/8810
 """
 CurrentUser = Annotated[UserModel, Depends(get_current_user)]
 
 
 @router.get("/")
-async def get_tournaments()->list[TournamentModel]:
-    tournament_list = await get_tourneys()
-    return tournament_list
+async def get_tournaments() -> list[TournamentModel]:
+    logger.info("Retrieving all tournaments")
+    tournaments = await get_tournaments()
+    return tournaments
 
 
 @router.get("/{id}/events")
 async def get_events_by_id(id: PydanticObjectId):
-    event_list=await get_tournament_events_by_id(id)
-    return event_list
-
-
-# TO-DO: Error testing (Kaustub)
-@router.get("/{id}")
-async def get_tournaments_by_id(
-    id: Annotated[PydanticObjectId, Path(title="ID of the tournament to get")]
-) -> TournamentModel:
     try:
-        tourney_retrieved = await get_tourney_id(id)
+        logger.info(f"Fetching events of tournament with ID: {id}")
+        events = await get_tournament_events_by_id(id)
     except tournamentNotFoundException:
         raise tournamentNotFoundException
-    return tourney_retrieved
+    return events
 
 
-# TO-DO: Error testing (Kaustub)
+@router.get("/{id}")
+async def get_tournament(
+    id: Annotated[PydanticObjectId, Path(title="ID of tournament to get")]
+) -> TournamentModel:
+    try:
+        logger.info(f"Fetching tournament with ID: {id}")
+        retrieved_tournament = await get_tourney_id(id)
+    except tournamentNotFoundException:
+        raise tournamentNotFoundException
+    return retrieved_tournament
+
+
 @router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_tournament(
-    tournamentObj: TournamentModel, current_user: CurrentUser
+    tournament: TournamentModel, current_user: CurrentUser
 ) -> Tournament_response:
-    response = await create_tournament_db(tournamentObj, current_user)
+    logger.info(
+        f"Creating event with details:\n{tournament}\nBy user: {current_user.uid}"
+    )
+    response = await create_tournament_db(tournament, current_user)
     return Tournament_response(tournament_id=response.id)
 
 
 @router.put("/{id}")
 async def update_tournament(
-    id: Annotated[PydanticObjectId, Path(title="ID of tournament")],
+    id: Annotated[PydanticObjectId, Path(title="ID of tournament to update")],
     updated_tournament: TournamentModel,
     current_user: CurrentUser,
 ) -> TournamentModel:
-    response = await update_tournament_by_id(id, updated_tournament, current_user)
-    if response is None:
+    try:
+        logger.info(
+            f"Updating event with ID: {id}, by user: {current_user.uid}\nUpdated event details:\n{updated_tournament}"
+        )
+        response = await update_tournament_by_id(id, updated_tournament, current_user)
+    except tournamentNotFoundException:
         raise tournamentNotFoundException
+    # TODO: Tournament update forbidden exception
     return response
 
 
-@router.delete("/{id}",status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_tournament(
     id: Annotated[PydanticObjectId, Path(title="ID of the tournament to delete")],
     current_user: CurrentUser,
-) -> (
-    None
-):  # returns nothing, can be changed to a message such as "Tournament deleted successfully"
+) -> None:
     try:
+        logger.info(f"Deleting event with ID: {id}, by user: {current_user.uid}")
         await delete_tourney_id(id, current_user)
+        return "Event deleted successfully"
     except tournamentNotFoundException:
         raise tournamentNotFoundException
     except tournamentDeleteForbiddenException:
