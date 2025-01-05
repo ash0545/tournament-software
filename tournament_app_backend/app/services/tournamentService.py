@@ -9,10 +9,9 @@ from exceptions.tournamentExceptions import (
 
 from models.documentModels.tournaments import TournamentDBModel
 from models.documentModels.events import EventDBModel
-from models.tournament import TournamentModel, Tournament_response
+from models.tournament import TournamentModel
 from models.user import UserModel
 
-from services.eventService import get_event_by_id
 
 logging.basicConfig(
     level=logging.INFO,
@@ -80,7 +79,9 @@ async def update_tournament_by_id(
     )
 
 
-async def delete_tourney_id(tournament_id: PydanticObjectId, current_user: UserModel):
+async def delete_tournament_by_id(
+    tournament_id: PydanticObjectId, current_user: UserModel
+):
     tournament_to_delete: TournamentDBModel = await get_tournament_by_id(tournament_id)
     if tournament_to_delete is None:
         logger.warning(f"Query for tournament ID {tournament_id} returned None")

@@ -25,12 +25,12 @@ from models.notFound import NotFoundModel
 
 from services.authentication import get_current_user
 from services.tournamentService import (
-    get_tourneys,
+    get_all_tournaments,
+    get_tournament_by_id,
     get_tournament_events_by_id,
+    add_tournament,
     update_tournament_by_id,
-    get_tourney_id,
-    create_tournament_db,
-    delete_tourney_id,
+    delete_tournament_by_id,
 )
 
 from typing import Annotated
@@ -61,7 +61,7 @@ CurrentUser = Annotated[UserModel, Depends(get_current_user)]
 @router.get("/")
 async def get_tournaments() -> list[TournamentResponseModel]:
     logger.info("Retrieving all tournaments")
-    tournaments = await get_tournaments()
+    tournaments = await get_all_tournaments()
     return tournaments
 
 
@@ -81,7 +81,7 @@ async def get_tournament(
 ) -> TournamentResponseModel:
     try:
         logger.info(f"Fetching tournament with ID: {id}")
-        retrieved_tournament = await get_tourney_id(id)
+        retrieved_tournament = await get_tournament_by_id(id)
     except TournamentNotFoundException:
         raise TournamentNotFoundHTTPException
     return retrieved_tournament
@@ -94,7 +94,7 @@ async def create_tournament(
     logger.info(
         f"Creating tournament with details:\n{tournament}\nBy user: {current_user.uid}"
     )
-    response = await create_tournament_db(tournament, current_user)
+    response = await add_tournament(tournament, current_user)
     return TournamentCreatedModel(tournament_id=response.id)
 
 
@@ -123,7 +123,7 @@ async def delete_tournament(
 ) -> str:
     try:
         logger.info(f"Deleting tournament with ID: {id}, by user: {current_user.uid}")
-        await delete_tourney_id(id, current_user)
+        await delete_tournament_by_id(id, current_user)
         return "Tournament deleted successfully"
     except TournamentNotFoundException:
         raise TournamentNotFoundHTTPException
