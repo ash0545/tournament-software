@@ -16,7 +16,11 @@ from fastapi.routing import APIRouter
 from fastapi import status, Depends, Path
 
 from models.user import UserModel
-from models.tournament import Tournament_response, TournamentModel
+from models.tournament import (
+    TournamentModel,
+    TournamentCreatedModel,
+    TournamentResponseModel,
+)
 from models.notFound import NotFoundModel
 
 from services.authentication import get_current_user
@@ -55,7 +59,7 @@ CurrentUser = Annotated[UserModel, Depends(get_current_user)]
 
 
 @router.get("/")
-async def get_tournaments() -> list[TournamentModel]:
+async def get_tournaments() -> list[TournamentResponseModel]:
     logger.info("Retrieving all tournaments")
     tournaments = await get_tournaments()
     return tournaments
@@ -74,7 +78,7 @@ async def get_events_by_id(id: PydanticObjectId):
 @router.get("/{id}")
 async def get_tournament(
     id: Annotated[PydanticObjectId, Path(title="ID of tournament to get")]
-) -> TournamentModel:
+) -> TournamentResponseModel:
     try:
         logger.info(f"Fetching tournament with ID: {id}")
         retrieved_tournament = await get_tourney_id(id)
@@ -86,12 +90,12 @@ async def get_tournament(
 @router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_tournament(
     tournament: TournamentModel, current_user: CurrentUser
-) -> Tournament_response:
+) -> TournamentCreatedModel:
     logger.info(
         f"Creating tournament with details:\n{tournament}\nBy user: {current_user.uid}"
     )
     response = await create_tournament_db(tournament, current_user)
-    return Tournament_response(tournament_id=response.id)
+    return TournamentCreatedModel(tournament_id=response.id)
 
 
 @router.put("/{id}")
@@ -99,10 +103,10 @@ async def update_tournament(
     id: Annotated[PydanticObjectId, Path(title="ID of tournament to update")],
     updated_tournament: TournamentModel,
     current_user: CurrentUser,
-) -> TournamentModel:
+) -> TournamentResponseModel:
     try:
         logger.info(
-            f"Updating tournament with ID: {id}, by user: {current_user.uid}\nUpdated event details:\n{updated_tournament}"
+            f"Updating tournament with ID: {id}, by user: {current_user.uid}\nUpdated tournament details:\n{updated_tournament}"
         )
         response = await update_tournament_by_id(id, updated_tournament, current_user)
     except TournamentNotFoundException:
