@@ -36,7 +36,7 @@ async def get_all_events():
 async def get_event_by_id(event_id: PydanticObjectId):
     retrieved_event: EventDBModel = await EventDBModel.get(event_id)
     if retrieved_event is None:
-        logger.warn(f"Query for event ID {event_id} returned None")
+        logger.warning(f"Query for event ID {event_id} returned None")
         raise EventNotFoundException
     return retrieved_event
 
@@ -65,10 +65,10 @@ async def update_event_by_id(
 ):
     current_event: EventDBModel = await get_event_by_id(event_id)
     if current_event is None:
-        logger.warn(f"Query for event ID {event_id} returned None")
+        logger.warning(f"Query for event ID {event_id} returned None")
         raise EventNotFoundException
     if current_event.created_by != current_user.uid:
-        logger.warn(
+        logger.warning(
             f"User {current_user.uid} not authorized to modify event {event_id}"
         )
         raise EventForbiddenException
@@ -83,10 +83,10 @@ async def update_event_by_id(
 async def delete_event_by_id(event_id: PydanticObjectId, current_user: UserModel):
     event_to_delete: EventDBModel = await get_event_by_id(event_id)
     if event_to_delete is None:
-        logger.warn(f"Query for event ID {event_id} returned None")
+        logger.warning(f"Query for event ID {event_id} returned None")
         raise EventNotFoundException
     if event_to_delete.created_by != current_user.uid:
-        logger.warn(
+        logger.warning(
             f"User {current_user.uid} not authorized to modify event {event_id}"
         )
         raise EventForbiddenException

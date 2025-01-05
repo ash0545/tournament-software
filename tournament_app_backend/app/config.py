@@ -19,7 +19,7 @@ class ConfigManager:
     def get(self, key: str):
         value = self._env.get(key)
         if value is None:
-            logger.warn(f"Environment variable {key} not set")
+            logger.warning(f"Environment variable {key} not set")
             raise EnvironmentError(f"Required environment variable {key} not set.")
         logger.info(f"Retrieved environment variable {key}")
         return value
