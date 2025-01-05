@@ -1,0 +1,1 @@
+export {default as gkokbh} from './google.svg'
