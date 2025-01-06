@@ -9,7 +9,7 @@ from exceptions.tournamentExceptions import (
 
 from models.documentModels.tournaments import TournamentDBModel
 from models.documentModels.events import EventDBModel
-from models.tournament import TournamentModel
+from models.tournament import TournamentModel, TournamentResponseModel
 from models.user import UserModel
 
 
@@ -25,11 +25,15 @@ async def get_all_tournaments():
     tournaments = TournamentDBModel.find_all()
     tournament_list = await tournaments.to_list()
     logger.info(f"Retrieved {len(tournament_list)} tournaments")
-    return tournament_list
+    tournaments = [
+        TournamentResponseModel(tournament_id=tournament.id, **tournament.model_dump())
+        for tournament in tournament_list
+    ]
+    return tournaments
 
 
 async def get_tournament_by_id(tournament_id: PydanticObjectId):
-    retrieved_tournament: TournamentDBModel = await TournamentDBModel.get(id)
+    retrieved_tournament: TournamentDBModel = await TournamentDBModel.get(tournament_id)
     if retrieved_tournament is None:
         logger.warning(f"Query for tournament ID {tournament_id} returned None")
         raise TournamentNotFoundException
@@ -58,20 +62,20 @@ async def add_tournament(new_tournament: TournamentModel, current_user: UserMode
 
 async def update_tournament_by_id(
     tournament_id: PydanticObjectId,
-    changed_tournament: TournamentDBModel,
+    changed_tournament: TournamentModel,
     current_user: UserModel,
 ):
     current_tournament: TournamentDBModel = await get_tournament_by_id(tournament_id)
     if current_tournament is None:
         logger.warning(f"Query for tournament ID {tournament_id} returned None")
         raise TournamentNotFoundException
-    if current_tournament.created_by != current_tournament.username:
+    if current_tournament.created_by != current_user.uid:
         logger.warning(
             f"User {current_user.uid} not authorized to modify event {tournament_id}"
         )
         raise TournamentForbiddenException
     changed_tournament = TournamentDBModel(
-        created_by=current_tournament.username, **changed_tournament.model_dump()
+        created_by=current_user.uid, **changed_tournament.model_dump()
     )
     logger.info(f"Tournament of id {tournament_id} was updated")
     return await current_tournament.update(
@@ -86,7 +90,7 @@ async def delete_tournament_by_id(
     if tournament_to_delete is None:
         logger.warning(f"Query for tournament ID {tournament_id} returned None")
         raise TournamentNotFoundException
-    if tournament_to_delete.created_by != current_user.username:
+    if tournament_to_delete.created_by != current_user.uid:
         logger.warning(
             f"User {current_user.uid} not authorized to modify event {tournament_id}"
         )

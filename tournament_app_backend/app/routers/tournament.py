@@ -84,7 +84,9 @@ async def get_tournament(
         retrieved_tournament = await get_tournament_by_id(id)
     except TournamentNotFoundException:
         raise TournamentNotFoundHTTPException
-    return retrieved_tournament
+    return TournamentResponseModel(
+        tournament_id=retrieved_tournament.id, **retrieved_tournament.model_dump()
+    )
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
@@ -113,7 +115,7 @@ async def update_tournament(
         raise TournamentNotFoundHTTPException
     except TournamentForbiddenException:
         raise TournamentForbiddenHTTPException
-    return response
+    return TournamentResponseModel(tournament_id=response.id, **response.model_dump())
 
 
 @router.delete("/{id}", status_code=status.HTTP_200_OK)

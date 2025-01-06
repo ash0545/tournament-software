@@ -10,6 +10,7 @@ from beanie import init_beanie
 
 from models import __document_models__
 from routers.events import router as eventsRouter
+from routers.tournament import router as tournamentsRouter
 from routers.auth import router as AuthRouter
 
 from fastapi_pagination import add_pagination
@@ -56,4 +57,5 @@ app.add_middleware(
 )
 
 app.include_router(eventsRouter)
+app.include_router(tournamentsRouter)
 app.include_router(AuthRouter)
