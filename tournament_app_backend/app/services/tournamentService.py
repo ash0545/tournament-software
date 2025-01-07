@@ -40,19 +40,6 @@ async def get_tournament_by_id(tournament_id: PydanticObjectId):
     return retrieved_tournament
 
 
-async def get_tournament_events_by_id(tournament_id: PydanticObjectId):
-    tournament: TournamentDBModel = await TournamentDBModel.get(tournament_id)
-    if tournament is None:
-        logger.warning(f"Query for tournament ID {tournament_id} returned None")
-        raise TournamentNotFoundException
-    events = []
-    for event in tournament.events:
-        retrieved_event: EventDBModel = await EventDBModel.get(event)
-        logger.info(f"Events for tournament id {tournament_id} was returned")
-        events.append(retrieved_event)
-    return events
-
-
 async def add_tournament(new_tournament: TournamentModel, current_user: UserModel):
     converted_db_tournament: TournamentDBModel = TournamentDBModel(
         created_by=current_user.uid, **new_tournament.model_dump()

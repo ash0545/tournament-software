@@ -27,7 +27,6 @@ from services.authentication import get_current_user
 from services.tournamentService import (
     get_all_tournaments,
     get_tournament_by_id,
-    get_tournament_events_by_id,
     add_tournament,
     update_tournament_by_id,
     delete_tournament_by_id,
@@ -63,16 +62,6 @@ async def get_tournaments() -> list[TournamentResponseModel]:
     logger.info("Retrieving all tournaments")
     tournaments = await get_all_tournaments()
     return tournaments
-
-
-@router.get("/{id}/events")
-async def get_events_by_id(id: PydanticObjectId):
-    try:
-        logger.info(f"Fetching events of tournament with ID: {id}")
-        events = await get_tournament_events_by_id(id)
-    except TournamentNotFoundException:
-        raise TournamentNotFoundHTTPException
-    return events
 
 
 @router.get("/{id}")
