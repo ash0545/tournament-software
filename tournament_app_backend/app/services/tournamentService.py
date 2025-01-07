@@ -7,8 +7,9 @@ from exceptions.tournamentExceptions import (
     TournamentForbiddenException,
 )
 
+from fastapi_pagination.ext.beanie import paginate
+
 from models.documentModels.tournaments import TournamentDBModel
-from models.documentModels.events import EventDBModel
 from models.tournament import TournamentModel, TournamentResponseModel
 from models.user import UserModel
 
@@ -22,13 +23,16 @@ logger = logging.getLogger(__name__)
 
 
 async def get_all_tournaments():
-    tournaments = TournamentDBModel.find_all()
-    tournament_list = await tournaments.to_list()
-    logger.info(f"Retrieved {len(tournament_list)} tournaments")
-    tournaments = [
-        TournamentResponseModel(tournament_id=tournament.id, **tournament.model_dump())
-        for tournament in tournament_list
-    ]
+    tournaments = await paginate(
+        query=TournamentDBModel.find_all(),
+        transformer=lambda tournament_list: [
+            TournamentResponseModel(
+                tournament_id=tournament.id, **tournament.model_dump()
+            )
+            for tournament in tournament_list
+        ],
+    )
+    logger.info(f"Retrieved {len(tournaments.items)} tournaments")
     return tournaments
 
 
