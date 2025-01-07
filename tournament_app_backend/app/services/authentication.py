@@ -32,9 +32,7 @@ def verify_firebase_token(
         HTTPException: If or token is invalid or expired.
     """
     try:
-        logger.info(f"Verifying ID token: {token.credentials}")
         decoded_token = verify_id_token(token.credentials)
-        logger.info(f"Token verified: {decoded_token}")
         return decoded_token
     except Exception as e:
         raise HTTPException(
