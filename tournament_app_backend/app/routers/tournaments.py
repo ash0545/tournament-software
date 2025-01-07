@@ -11,9 +11,11 @@ from exceptions.tournamentExceptions import (
     TournamentForbiddenException,
 )
 
-
 from fastapi.routing import APIRouter
 from fastapi import status, Depends, Path
+
+from fastapi_pagination import Page
+from fastapi_pagination.customization import CustomizedPage, UseParamsFields
 
 from models.user import UserModel
 from models.tournament import (
@@ -56,9 +58,15 @@ router = APIRouter(
 """
 CurrentUser = Annotated[UserModel, Depends(get_current_user)]
 
+# Changing pagination params default values
+CustomPage = CustomizedPage[
+    Page,
+    UseParamsFields(size=10),
+]
+
 
 @router.get("/")
-async def get_tournaments() -> list[TournamentResponseModel]:
+async def get_tournaments() -> CustomPage[TournamentResponseModel]:
     logger.info("Retrieving all tournaments")
     tournaments = await get_all_tournaments()
     return tournaments
