@@ -23,6 +23,12 @@ logger = logging.getLogger(__name__)
 
 
 async def get_all_tournaments():
+    """
+    Retrieves all tournaments in a paginated fashion.
+
+    Returns:
+        _type_: _description_
+    """
     tournaments = await paginate(
         query=TournamentDBModel.find_all(),
         transformer=lambda tournament_list: [
@@ -37,6 +43,18 @@ async def get_all_tournaments():
 
 
 async def get_tournament_by_id(tournament_id: PydanticObjectId):
+    """
+    Retrieves the tournament having the provided ID.
+
+    Args:
+        tournament_id (PydanticObjectId): The ID of the tournament to be retrieved.
+
+    Raises:
+        TournamentNotFoundException: If a tournament with the provided ID does not exist.
+
+    Returns:
+        _type_: _description_
+    """
     retrieved_tournament: TournamentDBModel = await TournamentDBModel.get(tournament_id)
     if retrieved_tournament is None:
         logger.warning(f"Query for tournament ID {tournament_id} returned None")
@@ -45,6 +63,16 @@ async def get_tournament_by_id(tournament_id: PydanticObjectId):
 
 
 async def add_tournament(new_tournament: TournamentModel, current_user: UserModel):
+    """
+    Creates a new tournament associated with the current user.
+
+    Args:
+        new_tournament (TournamentModel): The details of the tournament to be created.
+        current_user (UserModel): The current user.
+
+    Returns:
+        _type_: _description_
+    """
     converted_db_tournament: TournamentDBModel = TournamentDBModel(
         created_by=current_user.uid, **new_tournament.model_dump()
     )
@@ -56,6 +84,21 @@ async def update_tournament_by_id(
     changed_tournament: TournamentModel,
     current_user: UserModel,
 ):
+    """
+    Updates the details of the tournament having the provided ID.
+
+    Args:
+        tournament_id (PydanticObjectId): The ID of the tournament whose details are to be updated.
+        changed_tournament (TournamentModel): The new details of the tournament.
+        current_user (UserModel): The current user.
+
+    Raises:
+        TournamentNotFoundException: If a tournament with the provided ID does not exist.
+        TournamentForbiddenException: If the current user is not authorized to update the tournament with the provided ID.
+
+    Returns:
+        _type_: _description_
+    """
     current_tournament: TournamentDBModel = await get_tournament_by_id(tournament_id)
     if current_tournament is None:
         logger.warning(f"Query for tournament ID {tournament_id} returned None")
@@ -77,6 +120,17 @@ async def update_tournament_by_id(
 async def delete_tournament_by_id(
     tournament_id: PydanticObjectId, current_user: UserModel
 ):
+    """
+    Deletes the tournament having the provided ID.
+
+    Args:
+        tournament_id (PydanticObjectId): The ID of the tournament to be deleted.
+        current_user (UserModel): The current user.
+
+    Raises:
+        TournamentNotFoundException: If a tournament with the provided ID does not exist.
+        TournamentForbiddenException: If the current user is not authorized to delete the tournament with the provided ID.
+    """
     tournament_to_delete: TournamentDBModel = await get_tournament_by_id(tournament_id)
     if tournament_to_delete is None:
         logger.warning(f"Query for tournament ID {tournament_id} returned None")
