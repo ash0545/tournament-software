@@ -1,4 +1,11 @@
-import { Calendar, Flag, Users, BarChart } from "lucide-react";
+import {
+  Calendar,
+  Flag,
+  Users,
+  BarChart,
+  Settings,
+  LogOut,
+} from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -9,10 +16,11 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
+  SidebarSeparator,
 } from "@/components/ui/sidebar";
 
 export default function sidebar() {
-  const items = [
+  const upperItems = [
     {
       title: "Tournaments",
       url: "#",
@@ -35,14 +43,28 @@ export default function sidebar() {
     },
   ];
 
+  const lowerItems = [
+    {
+      title: "Settings",
+      url: "#",
+      icon: Settings,
+    },
+    {
+      title: "Sign Out",
+      url: "#",
+      icon: LogOut,
+    },
+  ];
+
   return (
     <Sidebar>
       <SidebarHeader />
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Tournament Software</SidebarGroupLabel>
-          <SidebarMenu>
-            {items.map((item) => (
+          <SidebarSeparator />
+          <SidebarMenu className="py-6">
+            {upperItems.map((item) => (
               <SidebarMenuItem key={item.title}>
                 <SidebarMenuButton asChild>
                   <a href={item.url}>
@@ -55,7 +77,20 @@ export default function sidebar() {
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter />
+      <SidebarFooter>
+        <SidebarMenu className="py-6">
+          {lowerItems.map((item) => (
+            <SidebarMenuItem key={item.title}>
+              <SidebarMenuButton asChild>
+                <a href={item.url}>
+                  <item.icon />
+                  <span>{item.title}</span>
+                </a>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          ))}
+        </SidebarMenu>
+      </SidebarFooter>
     </Sidebar>
   );
 }
