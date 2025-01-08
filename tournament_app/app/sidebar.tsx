@@ -1,63 +1,61 @@
-import Icon from "@/components/ui/custom/Icon";
-import dynamicIconImports from "lucide-react/dynamicIconImports";
-
-type Tab = {
-  icon: keyof typeof dynamicIconImports;
-  name: string;
-};
+import { Calendar, Flag, Users, BarChart } from "lucide-react";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
+} from "@/components/ui/sidebar";
 
 export default function sidebar() {
-  const upperTabs: Tab[] = [
+  const items = [
     {
-      icon: "home",
-      name: "Tournament",
+      title: "Tournaments",
+      url: "#",
+      icon: Flag,
     },
     {
-      icon: "home",
-      name: "Events",
+      title: "Events",
+      url: "#",
+      icon: Calendar,
     },
     {
-      icon: "home",
-      name: "Users",
+      title: "Users",
+      url: "#",
+      icon: Users,
     },
     {
-      icon: "home",
-      name: "Statistics",
+      title: "Statistics",
+      url: "#",
+      icon: BarChart,
     },
   ];
 
-  const bottonTab: Tab[] = [
-    {
-      icon: "home",
-      name: "Settings",
-    },
-    {
-      icon: "home",
-      name: "Sign Out",
-    },
-  ];
   return (
-    <div className="flex  flex-col p-4 bg-slate-200 w-full h-full justify-between">
-      <div className="mt-40">
-        {upperTabs.map((element, index) => {
-          return <NavButton key={index} element={element}></NavButton>;
-        })}
-      </div>
-      <div>
-        {bottonTab.map((element, index) => {
-          return <NavButton key={index} element={element}></NavButton>;
-        })}
-      </div>
-    </div>
-  );
-}
-
-function NavButton({ element }: { element: Tab }) {
-  return (
-    <div className="flex gap-6 p-4">
-      {/* <Icon name={element.icon} /> */}
-      <div className="w-6 h-6 bg-slate-500"></div>
-      <div className="text-lg font-semibold text-slate-700">{element.name}</div>
-    </div>
+    <Sidebar>
+      <SidebarHeader />
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupLabel>Tournament Software</SidebarGroupLabel>
+          <SidebarMenu>
+            {items.map((item) => (
+              <SidebarMenuItem key={item.title}>
+                <SidebarMenuButton asChild>
+                  <a href={item.url}>
+                    <item.icon />
+                    <span>{item.title}</span>
+                  </a>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ))}
+          </SidebarMenu>
+        </SidebarGroup>
+      </SidebarContent>
+      <SidebarFooter />
+    </Sidebar>
   );
 }
