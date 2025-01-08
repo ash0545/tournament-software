@@ -1,5 +1,5 @@
 import React from "react";
-import { Input } from "../../components/ui/input";
+import { Input } from "@/components/ui/input";
 import { ControllerRenderProps } from "react-hook-form";
 import { FormLabel } from "@/components/ui/form";
 
