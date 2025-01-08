@@ -18,17 +18,18 @@ import {
   SidebarMenuButton,
   SidebarSeparator,
 } from "@/components/ui/sidebar";
+import Link from "next/link";
 
 export default function sidebar() {
   const upperItems = [
     {
       title: "Tournaments",
-      url: "#",
+      url: "/tournament/create",
       icon: Flag,
     },
     {
       title: "Events",
-      url: "#",
+      url: "/events",
       icon: Calendar,
     },
     {
@@ -51,7 +52,7 @@ export default function sidebar() {
     },
     {
       title: "Sign Out",
-      url: "#",
+      url: "/login",
       icon: LogOut,
     },
   ];
@@ -67,10 +68,10 @@ export default function sidebar() {
             {upperItems.map((item) => (
               <SidebarMenuItem key={item.title}>
                 <SidebarMenuButton asChild>
-                  <a href={item.url}>
+                  <Link href={item.url}>
                     <item.icon />
                     <span>{item.title}</span>
-                  </a>
+                  </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             ))}
@@ -82,10 +83,10 @@ export default function sidebar() {
           {lowerItems.map((item) => (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton asChild>
-                <a href={item.url}>
+                <Link href={item.url}>
                   <item.icon />
                   <span>{item.title}</span>
-                </a>
+                </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
