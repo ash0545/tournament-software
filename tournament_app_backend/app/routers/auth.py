@@ -30,6 +30,15 @@ bearer_scheme = HTTPBearer(auto_error=False)
 async def auth_google(
     token: Annotated[HTTPAuthorizationCredentials | None, Depends(bearer_scheme)],
 ) -> UserModel:
+    """
+    Verifies ID token generated after signing-in with Google.
+
+    Args:
+        token (HTTPAuthorizationCredentials): The Bearer token.
+
+    Returns:
+        UserModel: Details of the verified user.
+    """
     decoded_token = verify_firebase_token(token)
     user_model = UserModel(
         uid=decoded_token["uid"],

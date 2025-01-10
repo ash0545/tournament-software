@@ -63,6 +63,15 @@ CustomPage = CustomizedPage[
 async def get_events(
     tournament_id: Annotated[str | None, Query] = None
 ) -> CustomPage[EventResponseModel]:
+    """
+    Retrieves all events / all events associated with the provided tournament ID.
+
+    Args:
+        tournament_id (str, optional Query param): The ID of the tournament whose events are to be retrieved.
+
+    Returns:
+        CustomPage[EventResponseModel]: All events in a paginated fashion.
+    """
     if tournament_id:
         logger.info(f"Received query parameter, tournament ID: {tournament_id}")
         events = await get_events_by_tournament(tournament_id)
@@ -76,6 +85,18 @@ async def get_events(
 async def get_event(
     id: Annotated[PydanticObjectId, Path(title="ID of event to get")]
 ) -> EventResponseModel:
+    """
+    Retrieves the event having the provided ID.
+
+    Args:
+        id (PydanticObjectId, Path param): The ID of the event to be retrieved.
+
+    Raises:
+        EventNotFoundHTTPException: Status code 404. "Could not find event"
+
+    Returns:
+        EventResponseModel: The required event.
+    """
     try:
         logger.info(f"Fetching event with ID: {id}")
         retrieved_event = await get_event_by_id(id)
@@ -90,6 +111,16 @@ async def get_event(
 async def create_event(
     event: EventModel, current_user: CurrentUser
 ) -> EventCreatedModel:
+    """
+    Creates a new event associated with the current user.
+
+    Args:
+        event (EventModel): The details of the event to be created.
+        current_user (CurrentUser): The current user.
+
+    Returns:
+        EventCreatedModel: The ID of the created event.
+    """
     logger.info(f"Creating event with details:\n{event}\nBy user: {current_user.uid}")
     response = await add_event(event, current_user)
     return EventCreatedModel(event_id=response.id)
@@ -101,6 +132,21 @@ async def update_event(
     updated_event: EventModel,
     current_user: CurrentUser,
 ) -> EventResponseModel:
+    """
+    Updates the details of the event having the provided ID.
+
+    Args:
+        updated_event (EventModel): The new details of the event.
+        current_user (CurrentUser): The current user.
+        id (PydanticObjectId, Path param): The ID of the event whose details are to be updated.
+
+    Raises:
+        EventNotFoundHTTPException: Status code 404. "Could not find event"
+        EventForbiddenHTTPException: Status code 403. "The event is not associated with your account"
+
+    Returns:
+        EventResponseModel: The updated event.
+    """
     try:
         logger.info(
             f"Updating event with ID: {id}, by user: {current_user.uid}\nUpdated event details:\n{updated_event}"
@@ -118,6 +164,20 @@ async def delete_event(
     id: Annotated[PydanticObjectId, Path(title="ID of event to delete")],
     current_user: CurrentUser,
 ) -> str:
+    """
+    Deletes the event having the provided ID.
+
+    Args:
+        current_user (CurrentUser): The current user.
+        id (PydanticObjectId, Path param): The ID of the event to be deleted.
+
+    Raises:
+        EventNotFoundHTTPException: Status code 404. "Could not find event"
+        EventForbiddenHTTPException: Status code 403. "The event is not associated with your account"
+
+    Returns:
+        str: Deletion confirmation message.
+    """
     try:
         logger.info(f"Deleting event with ID: {id}, by user: {current_user.uid}")
         await delete_event_by_id(id, current_user)
