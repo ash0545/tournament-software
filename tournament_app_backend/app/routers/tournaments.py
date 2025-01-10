@@ -67,6 +67,12 @@ CustomPage = CustomizedPage[
 
 @router.get("/")
 async def get_tournaments() -> CustomPage[TournamentResponseModel]:
+    """
+    Retrieves all tournaments.
+
+    Returns:
+        CustomPage[TournamentResponseModel]: All tournaments in a paginated fashion.
+    """
     logger.info("Retrieving all tournaments")
     tournaments = await get_all_tournaments()
     return tournaments
@@ -76,6 +82,18 @@ async def get_tournaments() -> CustomPage[TournamentResponseModel]:
 async def get_tournament(
     id: Annotated[PydanticObjectId, Path(title="ID of tournament to get")]
 ) -> TournamentResponseModel:
+    """
+    Retrieves the tournament having the provided ID.
+
+    Args:
+        id (PydanticObjectId, Path param): The ID of the tournament to be retrieved.
+
+    Raises:
+        TournamentNotFoundHTTPException: Status code 404. "Could not find tournament"
+
+    Returns:
+        TournamentResponseModel: The required tournament.
+    """
     try:
         logger.info(f"Fetching tournament with ID: {id}")
         retrieved_tournament = await get_tournament_by_id(id)
@@ -90,6 +108,16 @@ async def get_tournament(
 async def create_tournament(
     tournament: TournamentModel, current_user: CurrentUser
 ) -> TournamentCreatedModel:
+    """
+    Creates a new tournament associated with the current user.
+
+    Args:
+        tournament (TournamentModel): The details of the tournament to be created.
+        current_user (CurrentUser): The current user.
+
+    Returns:
+        TournamentCreatedModel: The ID of the created tournament.
+    """
     logger.info(
         f"Creating tournament with details:\n{tournament}\nBy user: {current_user.uid}"
     )
@@ -103,6 +131,21 @@ async def update_tournament(
     updated_tournament: TournamentModel,
     current_user: CurrentUser,
 ) -> TournamentResponseModel:
+    """
+    Updates the details of the tournament having the provided ID.
+
+    Args:
+        updated_tournament (TournamentModel): The new details of the tournament.
+        current_user (CurrentUser): The current user.
+        id (PydanticObjectId, Path param): The ID of the tournament whose details are to be updated.
+
+    Raises:
+        TournamentNotFoundHTTPException: Status code 404. "Could not find tournament"
+        TournamentForbiddenHTTPException: Status code 403. "The tournament is not associated with your account"
+
+    Returns:
+        TournamentResponseModel: The updated tournament.
+    """
     try:
         logger.info(
             f"Updating tournament with ID: {id}, by user: {current_user.uid}\nUpdated tournament details:\n{updated_tournament}"
@@ -120,6 +163,20 @@ async def delete_tournament(
     id: Annotated[PydanticObjectId, Path(title="ID of the tournament to delete")],
     current_user: CurrentUser,
 ) -> str:
+    """
+    Deletes the tournament having the provided ID.
+
+    Args:
+        current_user (CurrentUser): The current user.
+        id (PydanticObjectId, Path param): The ID of the tournament to be deleted.
+
+    Raises:
+        TournamentNotFoundHTTPException: Status code 404. "Could not find tournament"
+        TournamentForbiddenHTTPException: Status code 403. "The tournament is not associated with your account"
+
+    Returns:
+        str: Deletion confirmation message.
+    """
     try:
         logger.info(f"Deleting tournament with ID: {id}, by user: {current_user.uid}")
         await delete_tournament_by_id(id, current_user)
