@@ -5,7 +5,7 @@ import {
   SelectTrigger,
   SelectContent,
   SelectItem,
-} from "../../components/ui/select";
+} from "@/components/ui/select";
 import { FormControl, FormLabel } from "@/components/ui/form";
 import { ControllerRenderProps } from "react-hook-form";
 

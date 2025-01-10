@@ -4,8 +4,8 @@ import {
   signInWithGoogle,
   signOut,
   onAuthStateChanged,
-} from "@/lib/firebase/auth.js";
-import { firebaseConfig } from "@/lib/firebase/config";
+} from "@/components/lib/firebase/auth.js";
+import { firebaseConfig } from "@/components/lib/firebase/config";
 
 function GoogleSignInButton() {
   const handleSignOut = (event) => {

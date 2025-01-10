@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Sidebar from "./sidebar";
 import Layout_check from "./layout_check";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,12 +21,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <div className="flex">
+        <SidebarProvider className="flex">
           <div>
             <Layout_check />
           </div>
-          <div className="w-full">{children}</div>
-        </div>
+          <div className="w-full">
+            <SidebarTrigger />
+            {children}
+          </div>
+        </SidebarProvider>
       </body>
     </html>
   );
