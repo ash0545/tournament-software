@@ -8,6 +8,7 @@ from exceptions.tournamentExceptions import (
 )
 
 from fastapi_pagination.ext.beanie import paginate
+from fastapi_pagination import Page
 
 from models.documentModels.tournaments import TournamentDBModel
 from models.tournament import TournamentModel, TournamentResponseModel
@@ -22,12 +23,12 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-async def get_all_tournaments():
+async def get_all_tournaments() -> Page[TournamentDBModel]:
     """
     Retrieves all tournaments in a paginated fashion.
 
     Returns:
-        _type_: _description_
+        Page[TournamentDBModel]: Paginated list of retrieved tournaments.
     """
     tournaments = await paginate(
         query=TournamentDBModel.find_all(),
@@ -42,7 +43,7 @@ async def get_all_tournaments():
     return tournaments
 
 
-async def get_tournament_by_id(tournament_id: PydanticObjectId):
+async def get_tournament_by_id(tournament_id: PydanticObjectId) -> TournamentDBModel:
     """
     Retrieves the tournament having the provided ID.
 
@@ -53,7 +54,7 @@ async def get_tournament_by_id(tournament_id: PydanticObjectId):
         TournamentNotFoundException: If a tournament with the provided ID does not exist.
 
     Returns:
-        _type_: _description_
+        TournamentDBModel: The retrieved tournament.
     """
     retrieved_tournament: TournamentDBModel = await TournamentDBModel.get(tournament_id)
     if retrieved_tournament is None:
@@ -62,7 +63,9 @@ async def get_tournament_by_id(tournament_id: PydanticObjectId):
     return retrieved_tournament
 
 
-async def add_tournament(new_tournament: TournamentModel, current_user: UserModel):
+async def add_tournament(
+    new_tournament: TournamentModel, current_user: UserModel
+) -> TournamentDBModel:
     """
     Creates a new tournament associated with the current user.
 
@@ -71,7 +74,7 @@ async def add_tournament(new_tournament: TournamentModel, current_user: UserMode
         current_user (UserModel): The current user.
 
     Returns:
-        _type_: _description_
+        TournamentDBModel: The newly inserted tournament.
     """
     converted_db_tournament: TournamentDBModel = TournamentDBModel(
         created_by=current_user.uid, **new_tournament.model_dump()
@@ -83,7 +86,7 @@ async def update_tournament_by_id(
     tournament_id: PydanticObjectId,
     changed_tournament: TournamentModel,
     current_user: UserModel,
-):
+) -> TournamentDBModel:
     """
     Updates the details of the tournament having the provided ID.
 
@@ -97,7 +100,7 @@ async def update_tournament_by_id(
         TournamentForbiddenException: If the current user is not authorized to update the tournament with the provided ID.
 
     Returns:
-        _type_: _description_
+        TournamentDBModel: The updated tournament.
     """
     current_tournament: TournamentDBModel = await get_tournament_by_id(tournament_id)
     if current_tournament is None:

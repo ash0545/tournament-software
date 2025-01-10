@@ -8,6 +8,7 @@ from exceptions.eventExceptions import (
 )
 
 from fastapi_pagination.ext.beanie import paginate
+from fastapi_pagination import Page
 
 from models.documentModels.events import EventDBModel
 from models.event import EventModel, EventResponseModel
@@ -21,12 +22,12 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-async def get_all_events():
+async def get_all_events() -> Page[EventDBModel]:
     """
     Retrieves all events in a paginated fashion.
 
     Returns:
-        _type_: _description_
+        Page[EventDBModel]: Paginated list of retrieved events.
     """
     events = await paginate(
         query=EventDBModel.find_all(),
@@ -39,7 +40,7 @@ async def get_all_events():
     return events
 
 
-async def get_event_by_id(event_id: PydanticObjectId):
+async def get_event_by_id(event_id: PydanticObjectId) -> EventDBModel:
     """
     Retrieves the event having the provided ID.
 
@@ -50,7 +51,7 @@ async def get_event_by_id(event_id: PydanticObjectId):
         EventNotFoundException: If an event with the provided ID does not exist.
 
     Returns:
-        _type_: _description_
+        EventDBModel: The retrieved event.
     """
     retrieved_event: EventDBModel = await EventDBModel.get(event_id)
     if retrieved_event is None:
@@ -59,7 +60,7 @@ async def get_event_by_id(event_id: PydanticObjectId):
     return retrieved_event
 
 
-async def get_events_by_tournament(tournament_id: str):
+async def get_events_by_tournament(tournament_id: str) -> Page[EventDBModel]:
     """
     Retrieves all events associated with the tournament having the provided ID, in a paginated fashion.
 
@@ -67,7 +68,7 @@ async def get_events_by_tournament(tournament_id: str):
         tournament_id (str): The ID of the tournament whose events are to be retrieved.
 
     Returns:
-        _type_: _description_
+        Page[EventDBModel]: Paginated list of retrieved events.
     """
     events = await paginate(
         query=EventDBModel.find_many(EventDBModel.tournament_id == tournament_id),
@@ -80,7 +81,7 @@ async def get_events_by_tournament(tournament_id: str):
     return events
 
 
-async def add_event(new_event: EventModel, current_user: UserModel):
+async def add_event(new_event: EventModel, current_user: UserModel) -> EventDBModel:
     """
     Creates a new event associated with the current user.
 
@@ -89,7 +90,7 @@ async def add_event(new_event: EventModel, current_user: UserModel):
         current_user (UserModel): The current user.
 
     Returns:
-        _type_: _description_
+        EventDBModel: The newly inserted event.
     """
     converted_db_event: EventDBModel = EventDBModel(
         created_by=current_user.uid, **new_event.model_dump()
@@ -99,7 +100,7 @@ async def add_event(new_event: EventModel, current_user: UserModel):
 
 async def update_event_by_id(
     event_id: PydanticObjectId, changed_event: EventModel, current_user: UserModel
-):
+) -> EventDBModel:
     """
     Updates the details of the event having the provided ID.
 
@@ -113,7 +114,7 @@ async def update_event_by_id(
         EventForbiddenException: If the current user is not authorized to update the event with the provided ID.
 
     Returns:
-        _type_: _description_
+        EventDBModel: The updated event.
     """
     current_event: EventDBModel = await get_event_by_id(event_id)
     if current_event is None:
