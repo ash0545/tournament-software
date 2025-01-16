@@ -5,8 +5,8 @@ import "@/app/globals.css";
 import { useState } from "react";
 import { Inter } from "next/font/google";
 import { Button } from "@/components/ui/button";
-import EventsTable from "./eventstable";
-import CreateTournament from "./createtournament";
+import EventsTable from "./EventsTable";
+import CreateTournament from "./TournamentForm";
 import { Label } from "@/components/ui/label";
 
 const inter = Inter({ subsets: ["latin"] });
