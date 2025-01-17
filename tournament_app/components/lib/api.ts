@@ -1,4 +1,4 @@
-import { time } from "console";
+import { Tournament } from "./types";
 
 export async function fetchTournaments(page: number = 1, size: number = 2) {
   const mockData = {
@@ -63,5 +63,7 @@ export async function fetchTournaments(page: number = 1, size: number = 2) {
 
   setTimeout(() => console.log("Simulating delay of fetching from API."), 1000);
 
-  return mockData;
+  const tournaments: Tournament[] = mockData.items;
+  const totalPosts = mockData.total;
+  return { tournaments, totalPosts };
 }
