@@ -1,13 +1,10 @@
-"use client";
-
 import { Label } from "@/components/ui/label";
-import TournamentCard from "./TournamentCard";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
+import Tournaments from "./Tournaments";
+import { redirect } from "next/navigation";
+import Link from "next/link";
 
 export default function Page() {
-  const router = useRouter();
-
   return (
     <div className=" m-10">
       <div className="flex flex-row justify-between">
@@ -17,15 +14,11 @@ export default function Page() {
         >
           Tournaments
         </Label>
-        <Button
-          onClick={() => router.push("/tournaments/create")}
-          className="max-w-[90px]"
-          type="button"
-        >
-          Create
+        <Button className="max-w-[90px]" type="button">
+          <Link href="/tournaments/create">Create</Link>
         </Button>
       </div>
-      <TournamentCard />
+      <Tournaments />
     </div>
   );
 }

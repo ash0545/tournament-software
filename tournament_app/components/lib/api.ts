@@ -64,6 +64,6 @@ export async function fetchTournaments(page: number = 1, size: number = 2) {
   setTimeout(() => console.log("Simulating delay of fetching from API."), 1000);
 
   const tournaments: Tournament[] = mockData.items;
-  const totalPosts = mockData.total;
-  return { tournaments, totalPosts };
+  const totalTournaments = mockData.total;
+  return { tournaments, totalTournaments };
 }
