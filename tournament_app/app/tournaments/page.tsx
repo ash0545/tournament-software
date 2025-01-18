@@ -1,10 +1,13 @@
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import Tournaments from "./Tournaments";
-import { redirect } from "next/navigation";
 import Link from "next/link";
 
-export default function Page() {
+interface PageProps {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
+export default async function Page({ searchParams }: PageProps) {
   return (
     <div className=" m-10">
       <div className="flex flex-row justify-between">
@@ -18,7 +21,7 @@ export default function Page() {
           <Link href="/tournaments/create">Create</Link>
         </Button>
       </div>
-      <Tournaments />
+      <Tournaments searchParams={searchParams} />
     </div>
   );
 }
