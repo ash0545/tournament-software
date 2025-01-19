@@ -1,6 +1,7 @@
 import { fetchTournaments } from "@/components/lib/api";
 import React from "react";
 import TournamentList from "./TournamentList";
+import { PaginationWithLinks } from "@/components/ui/pagination-with-links";
 
 interface TournamentsProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -23,6 +24,13 @@ async function Tournaments(props: TournamentsProps) {
   return (
     <div>
       <TournamentList tournaments={tournaments} />
+      <div>
+        <PaginationWithLinks
+          page={currentPage}
+          pageSize={tournamentsPerPage}
+          totalCount={totalTournaments}
+        />
+      </div>
     </div>
   );
 }
