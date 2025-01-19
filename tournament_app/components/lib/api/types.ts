@@ -20,3 +20,8 @@ export interface Event {
   entry_fee: number;
   event_mode: string;
 }
+
+export interface ApiResponse<T> {
+  data: T;
+  error?: string;
+}
