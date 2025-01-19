@@ -1,4 +1,4 @@
-import { Tournament } from "@/components/lib/types";
+import { Tournament } from "@/components/lib/api/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import React from "react";
 
