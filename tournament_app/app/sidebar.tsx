@@ -24,7 +24,7 @@ export default function sidebar() {
   const upperItems = [
     {
       title: "Tournaments",
-      url: "/tournament/create",
+      url: "/tournaments",
       icon: Flag,
     },
     {
