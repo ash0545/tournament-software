@@ -22,17 +22,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <AuthProvider>
-          <SidebarProvider className="flex">
-            <div>
-              <Layout_check />
-            </div>
-            <div className="w-full">
+        <SidebarProvider className="flex">
+          <div>
+            <Layout_check />
+          </div>
+          <div className="w-full">
+            <AuthProvider>
               <SidebarTrigger />
               {children}
-            </div>
-          </SidebarProvider>
-        </AuthProvider>
+            </AuthProvider>
+          </div>
+        </SidebarProvider>
       </body>
     </html>
   );

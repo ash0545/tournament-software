@@ -16,10 +16,10 @@ export async function signInWithGoogle() {
 
   try {
     const result = await signInWithPopup(auth, provider);
-    const IdToken = await result.user.getIdToken();
-    console.log(IdToken);
+    return result;
   } catch (error) {
     console.error("Error signing in with Google", error);
+    return null;
   }
 }
 

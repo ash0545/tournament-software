@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { onAuthStateChanged } from "../firebase/auth";
+import { setCookie, deleteCookie } from "cookies-next";
 
 interface AuthContextType {
   user: any | null;
@@ -20,16 +21,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged((user) => {
+    const unsubscribe = onAuthStateChanged(async (user) => {
       if (user) {
         // User is signed in
+        const token = await user.getIdToken();
+        setCookie("firebase-token", token, {
+          secure: true,
+          sameSite: "strict",
+        });
         setUser(user);
+
         if (window.location.pathname === "login") {
           router.push("/");
         }
       } else {
         // User is signed out
+        deleteCookie("firebase-token");
         setUser(null);
+
         if (window.location.pathname !== "login") {
           router.push("/login");
         }

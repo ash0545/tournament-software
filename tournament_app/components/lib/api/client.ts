@@ -1,5 +1,3 @@
-import { getSession } from "next-auth/react";
-import { cookies, headers } from "next/headers";
 import { ApiResponse } from "./types";
 import { API_BASE_URL } from "./config";
 import { auth } from "../firebase/clientApp";

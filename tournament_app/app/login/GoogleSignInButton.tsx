@@ -1,17 +1,22 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { signInWithGoogle, signOut } from "@/components/lib/firebase/auth.js";
-import { firebaseConfig } from "@/components/lib/firebase/config";
+import { signInWithGoogle, signOut } from "@/components/lib/firebase/auth";
+import { setCookie, deleteCookie } from "cookies-next";
 
 function GoogleSignInButton() {
-  const handleSignOut = (event) => {
+  const handleSignOut = async (event: React.MouseEvent) => {
     event.preventDefault();
-    signOut();
+    await signOut();
+    deleteCookie("firebase-token");
   };
 
-  const handleSignIn = (event) => {
+  const handleSignIn = async (event: React.MouseEvent) => {
     event.preventDefault();
-    signInWithGoogle();
+    const result = await signInWithGoogle();
+    if (result?.user) {
+      const token = await result.user.getIdToken();
+      setCookie("firebase-token", token, { secure: true, sameSite: "strict" });
+    }
   };
 
   return (
