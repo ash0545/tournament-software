@@ -1,4 +1,4 @@
-import { ApiResponse } from "./types";
+import { ApiResponse } from "../types/api";
 import { API_BASE_URL } from "./config";
 import { auth } from "../firebase/clientApp";
 

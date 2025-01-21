@@ -1,4 +1,4 @@
-import { Tournament } from "./api/types";
+import { Tournament } from "./types/tournaments";
 
 export async function fetchTournaments(page: number = 1, size: number = 2) {
   const mockData = {
