@@ -3,7 +3,8 @@ import { apiClient } from "../client";
 import { ROUTES } from "../routes";
 
 export const tournamentsApi = {
-  getAll: () => apiClient.get<PaginatedTournaments>(ROUTES.TOURNAMENTS.getAll),
+  getAll: (page: number = 1, size: number = 10) =>
+    apiClient.get<PaginatedTournaments>(ROUTES.TOURNAMENTS.getAll(page, size)),
   getById: (id: string) =>
     apiClient.get<PaginatedTournaments>(ROUTES.TOURNAMENTS.getById(id)),
   create: (tournament: Omit<Tournament, "tournament_id">) =>

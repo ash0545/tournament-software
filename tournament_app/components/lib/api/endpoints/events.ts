@@ -3,9 +3,12 @@ import { apiClient } from "../client";
 import { ROUTES } from "../routes";
 
 export const eventsApi = {
-  getAll: () => apiClient.get<PaginatedEvents>(ROUTES.EVENTS.getAll),
-  getByTournament: (id: string) =>
-    apiClient.get<PaginatedEvents>(ROUTES.EVENTS.getByTournament(id)),
+  getAll: (page: number = 1, size: number = 10) =>
+    apiClient.get<PaginatedEvents>(ROUTES.EVENTS.getAll(page, size)),
+  getByTournament: (id: string, page: number = 1, size: number = 10) =>
+    apiClient.get<PaginatedEvents>(
+      ROUTES.EVENTS.getByTournament(id, page, size)
+    ),
   getById: (id: string) =>
     apiClient.get<PaginatedEvents>(ROUTES.EVENTS.getById(id)),
   create: (event: Omit<Event, "event_id">) =>
