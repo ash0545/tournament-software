@@ -62,6 +62,53 @@ class ApiClient {
       };
     }
   }
+
+  async put<T>(url: string, body: any): Promise<ApiResponse<T>> {
+    try {
+      const headers = await this.getHeaders();
+      const response = await fetch(`${API_BASE_URL}/${url}`, {
+        method: "PUT",
+        headers,
+        credentials: "include",
+        body: JSON.stringify(body),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return { data };
+    } catch (error) {
+      return {
+        data: null as T,
+        error: error instanceof Error ? error.message : "Unknown error",
+      };
+    }
+  }
+
+  async delete<T>(url: string): Promise<ApiResponse<T>> {
+    try {
+      const headers = await this.getHeaders();
+      const response = await fetch(`${API_BASE_URL}/${url}`, {
+        method: "DELETE",
+        headers,
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return { data };
+    } catch (error) {
+      return {
+        data: null as T,
+        error: error instanceof Error ? error.message : "Unknown error",
+      };
+    }
+  }
 }
 
 export const apiClient = new ApiClient();

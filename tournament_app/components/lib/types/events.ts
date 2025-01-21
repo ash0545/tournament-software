@@ -1,4 +1,5 @@
 export interface Event {
+  event_id: string;
   event_name: string;
   tournament_id: string;
   num_of_seedings: number;
