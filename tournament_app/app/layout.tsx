@@ -4,6 +4,7 @@ import "./globals.css";
 import Sidebar from "./sidebar";
 import Layout_check from "./layout_check";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AuthProvider } from "@/components/lib/context/AuthContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,15 +22,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <SidebarProvider className="flex">
-          <div>
-            <Layout_check />
-          </div>
-          <div className="w-full">
-            <SidebarTrigger />
-            {children}
-          </div>
-        </SidebarProvider>
+        <AuthProvider>
+          <SidebarProvider className="flex">
+            <div>
+              <Layout_check />
+            </div>
+            <div className="w-full">
+              <SidebarTrigger />
+              {children}
+            </div>
+          </SidebarProvider>
+        </AuthProvider>
       </body>
     </html>
   );

@@ -1,10 +1,6 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
-import {
-  signInWithGoogle,
-  signOut,
-  onAuthStateChanged,
-} from "@/components/lib/firebase/auth.js";
+import { signInWithGoogle, signOut } from "@/components/lib/firebase/auth.js";
 import { firebaseConfig } from "@/components/lib/firebase/config";
 
 function GoogleSignInButton() {

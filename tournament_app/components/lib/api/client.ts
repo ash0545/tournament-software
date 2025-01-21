@@ -2,20 +2,18 @@ import { getSession } from "next-auth/react";
 import { cookies, headers } from "next/headers";
 import { ApiResponse } from "./types";
 import { API_BASE_URL } from "./config";
+import { auth } from "../firebase/clientApp";
 
 class ApiClient {
   private async getHeaders(): Promise<Headers> {
-    const session = await getSession();
-    const cookieStore = await cookies();
     const headers = new Headers({
       "Content-Type": "application/json",
     });
 
-    if (cookieStore.has("firebase-token")) {
-      headers.append(
-        "Authorization",
-        `Bearer ${cookieStore.get("firebase-token")}`
-      );
+    const user = auth.currentUser;
+    if (user) {
+      const token = await user.getIdToken();
+      headers.append("Authorization", `Bearer ${token}`);
     }
 
     return headers;
