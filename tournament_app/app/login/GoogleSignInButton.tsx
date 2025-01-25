@@ -1,21 +1,30 @@
-import React from "react";
+"use client";
+
+import React, { useEffect } from "react";
+
 import { Button } from "@/components/ui/button";
-import {
-  signInWithGoogle,
-  signOut,
-  onAuthStateChanged,
-} from "@/components/lib/firebase/auth.js";
-import { firebaseConfig } from "@/components/lib/firebase/config";
+
+import { auth } from "@/components/lib/firebase/clientApp";
+import { useSignInWithGoogle } from "react-firebase-hooks/auth";
+import { useRouter } from "next/navigation";
 
 function GoogleSignInButton() {
-  const handleSignOut = (event) => {
-    event.preventDefault();
-    signOut();
-  };
+  const [signInWithGoogle, user, loading, error] = useSignInWithGoogle(auth);
 
-  const handleSignIn = (event) => {
-    event.preventDefault();
-    signInWithGoogle();
+  const router = useRouter();
+  useEffect(() => {
+    if (!loading && user) {
+      router.push("/");
+    }
+  }, [user, loading, router]);
+
+  const handleSignIn = async () => {
+    try {
+      const res = await signInWithGoogle();
+      console.log({ res });
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (

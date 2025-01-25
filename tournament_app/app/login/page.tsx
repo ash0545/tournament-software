@@ -43,7 +43,7 @@ function page() {
     <div className="flex h-screen ">
       <div className="w-2/3  bg-gray-200 h-full"> </div>
       <div className=" h-full w-1/3">
-        <div className="flex h-screen items-center justify-center ml-2 mr-2">
+        <div className="flex flex-col h-screen items-center justify-center ml-2 mr-2">
           <Form {...form}>
             <form
               action=""
@@ -97,13 +97,15 @@ function page() {
               <Button type="submit" className="w-full">
                 Login
               </Button>
-              <span className="flex w-full md:w-60 lg:w-80">
-                <Separator className="w-5/12 bg-gray-600 mt-3 mx-2" /> or
-                <Separator className="w-5/12 mt-3 pt-px mx-2 bg-gray-600 " />
-              </span>
-              <GoogleSignInButton />
             </form>
           </Form>
+          <div>
+            <span className="flex w-full md:w-60 lg:w-80">
+              <Separator className="w-5/12 bg-gray-600 mt-3 mx-2" /> or
+              <Separator className="w-5/12 mt-3 pt-px mx-2 bg-gray-600 " />
+            </span>
+            <GoogleSignInButton />
+          </div>
         </div>
       </div>
     </div>
