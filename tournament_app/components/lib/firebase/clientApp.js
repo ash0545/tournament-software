@@ -1,9 +1,9 @@
-'use client';
-
-import { initializeApp, getApps } from "firebase/app";
+import { initializeApp, getApps, getApp } from "firebase/app";
 import { firebaseConfig } from "./config";
 import { getAuth } from "firebase/auth";
 
-export const firebaseApp =
-  getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
-export const auth = getAuth(firebaseApp);
+const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+
+const auth = getAuth(app);
+
+export { app, auth };
