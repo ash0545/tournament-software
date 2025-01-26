@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { auth } from "@/components/lib/firebase/clientApp";
 import { useSignInWithGoogle } from "react-firebase-hooks/auth";
 import { useRouter } from "next/navigation";
+import { createSession } from "@/components/lib/actions/auth-actions";
 
 function GoogleSignInButton() {
   const [signInWithGoogle, user, loading, error] = useSignInWithGoogle(auth);
@@ -21,7 +22,11 @@ function GoogleSignInButton() {
   const handleSignIn = async () => {
     try {
       const res = await signInWithGoogle();
-      console.log({ res });
+      if (res) {
+        const token = await res.user.getIdToken();
+        await createSession(token);
+        router.push("/");
+      }
     } catch (e) {
       console.error(e);
     }

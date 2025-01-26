@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
@@ -14,12 +14,16 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Separator } from "@/components/ui/separator";
+import { toast } from "sonner";
 
 import GoogleSignInButton from "./GoogleSignInButton";
 
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "@/components/lib/firebase/clientApp";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   emailAddress: z.string().email(),
@@ -27,6 +31,16 @@ const formSchema = z.object({
 });
 
 function page() {
+  const [user, loading, error] = useAuthState(auth);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading && user) {
+      router.push("/");
+      toast(`Logged in as ${user.displayName}`);
+    }
+  }, [user, loading, router]);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -38,6 +52,10 @@ function page() {
   const handleSubmit = (values: z.infer<typeof formSchema>) => {
     console.log({ values });
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="flex h-screen ">
