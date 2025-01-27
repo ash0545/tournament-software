@@ -4,6 +4,7 @@ import "./globals.css";
 import Layout_check from "./layout_check";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/sonner";
+import Providers from "./providers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,7 +28,7 @@ export default function RootLayout({
           </div>
           <div className="w-full">
             <SidebarTrigger />
-            {children}
+            <Providers>{children}</Providers>
           </div>
         </SidebarProvider>
         <Toaster />
