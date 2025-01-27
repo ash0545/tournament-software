@@ -1,3 +1,5 @@
+"use client";
+
 import { fetchTournaments } from "@/components/lib/api";
 import React from "react";
 import TournamentList from "./TournamentList";

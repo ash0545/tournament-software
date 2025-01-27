@@ -1,6 +1,6 @@
 import { Tournament } from "./types";
 
-export async function fetchTournaments(page: number = 1, size: number = 2) {
+export function fetchTournaments(page: number = 1, size: number = 2) {
   const mockData = {
     items: [
       {
@@ -60,8 +60,6 @@ export async function fetchTournaments(page: number = 1, size: number = 2) {
     size: 5,
     pages: 4,
   };
-
-  setTimeout(() => console.log("Simulating delay of fetching from API."), 1000);
 
   const tournaments: Tournament[] = mockData.items;
   const totalTournaments = mockData.total;
