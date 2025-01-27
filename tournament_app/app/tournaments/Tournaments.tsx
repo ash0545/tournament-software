@@ -4,19 +4,15 @@ import TournamentList from "./TournamentList";
 import { PaginationWithLinks } from "@/components/ui/pagination-with-links";
 
 interface TournamentsProps {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+  searchParams: { [key: string]: string | string[] | undefined };
 }
 
-export async function generateMetadata(props: TournamentsProps) {
-  const searchParams = await props.searchParams;
-}
-
-async function Tournaments(props: TournamentsProps) {
-  const searchParams = await props.searchParams;
+function Tournaments(props: TournamentsProps) {
+  const searchParams = props.searchParams;
   const currentPage = parseInt((searchParams.page as string) || "1");
   const tournamentsPerPage = parseInt((searchParams.size as string) || "2");
 
-  const { tournaments, totalTournaments } = await fetchTournaments(
+  const { tournaments, totalTournaments } = fetchTournaments(
     currentPage,
     tournamentsPerPage
   );

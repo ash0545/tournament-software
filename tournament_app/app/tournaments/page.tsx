@@ -1,5 +1,10 @@
+"use client";
+
+import { use } from "react";
+
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+
 import Tournaments from "./Tournaments";
 import Link from "next/link";
 
@@ -7,7 +12,9 @@ interface PageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
-export default async function Page({ searchParams }: PageProps) {
+export default function Page(props: PageProps) {
+  const searchParams = use(props.searchParams);
+
   return (
     <div className=" m-10">
       <div className="flex flex-row justify-between">
