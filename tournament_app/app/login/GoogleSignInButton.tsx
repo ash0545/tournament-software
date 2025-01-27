@@ -4,7 +4,7 @@ import React, { useEffect } from "react";
 
 import { Button } from "@/components/ui/button";
 
-import { auth } from "@/components/lib/firebase/clientApp";
+import { auth } from "@/components/lib/firebase/client-app";
 import { useSignInWithGoogle } from "react-firebase-hooks/auth";
 import { useRouter } from "next/navigation";
 import { createSession } from "@/components/lib/actions/auth-actions";
