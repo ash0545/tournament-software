@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Sidebar from "./sidebar";
 import Layout_check from "./layout_check";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { Toaster } from "@/components/ui/sonner";
+import Providers from "./providers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,9 +28,10 @@ export default function RootLayout({
           </div>
           <div className="w-full">
             <SidebarTrigger />
-            {children}
+            <Providers>{children}</Providers>
           </div>
         </SidebarProvider>
+        <Toaster />
       </body>
     </html>
   );
