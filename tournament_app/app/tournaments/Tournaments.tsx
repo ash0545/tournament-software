@@ -1,6 +1,6 @@
 "use client";
 
-import { useFetchTournaments } from "@/components/lib/api";
+import { useFetchTournaments } from "@/components/api/hooks/useTournaments";
 import TournamentList from "./TournamentList";
 import { PaginationWithLinks } from "@/components/ui/pagination-with-links";
 
@@ -20,7 +20,6 @@ function Tournaments({ searchParams }: TournamentsProps) {
   if (isLoading) return <div>Loading tournaments...</div>;
   if (error) return <div>Error: {error.message}</div>;
 
-  console.log(data);
   return (
     <div>
       <TournamentList tournaments={data?.items || []} />
