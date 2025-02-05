@@ -1,7 +1,6 @@
 "use client";
 
-import { fetchTournaments } from "@/components/lib/api";
-import React from "react";
+import { useFetchTournaments } from "@/components/lib/api";
 import TournamentList from "./TournamentList";
 import { PaginationWithLinks } from "@/components/ui/pagination-with-links";
 
@@ -9,26 +8,27 @@ interface TournamentsProps {
   searchParams: { [key: string]: string | string[] | undefined };
 }
 
-function Tournaments(props: TournamentsProps) {
-  const searchParams = props.searchParams;
+function Tournaments({ searchParams }: TournamentsProps) {
   const currentPage = parseInt((searchParams.page as string) || "1");
   const tournamentsPerPage = parseInt((searchParams.size as string) || "2");
 
-  const { tournaments, totalTournaments } = fetchTournaments(
+  const { data, error, isLoading } = useFetchTournaments(
     currentPage,
     tournamentsPerPage
   );
 
+  if (isLoading) return <div>Loading tournaments...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+
+  console.log(data);
   return (
     <div>
-      <TournamentList tournaments={tournaments} />
-      <div>
-        <PaginationWithLinks
-          page={currentPage}
-          pageSize={tournamentsPerPage}
-          totalCount={totalTournaments}
-        />
-      </div>
+      <TournamentList tournaments={data?.items || []} />
+      <PaginationWithLinks
+        page={currentPage}
+        pageSize={tournamentsPerPage}
+        totalCount={data?.total || 0}
+      />
     </div>
   );
 }
