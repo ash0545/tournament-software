@@ -18,12 +18,9 @@ export default function Page(props: PageProps) {
   return (
     <div className=" m-10">
       <div className="flex flex-row justify-between">
-        <Label
-          className={`font-semibold mb-[18px]`}
-          style={{ fontSize: "32px" }}
-        >
+        <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl mb-4">
           Tournaments
-        </Label>
+        </h1>
         <Button className="max-w-[90px]" type="button">
           <Link href="/tournaments/create">Create</Link>
         </Button>

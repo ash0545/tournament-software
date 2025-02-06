@@ -25,9 +25,7 @@ function TournamentList({ tournaments }: TournamentListProps) {
           <CardHeader>
             <CardTitle>{tournament.tournament_name}</CardTitle>
           </CardHeader>
-          <CardContent>
-            <p>{tournament.description}</p>
-          </CardContent>
+          <CardContent>{tournament.description}</CardContent>
         </Card>
       ))}
     </div>
