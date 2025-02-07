@@ -24,6 +24,7 @@ function GoogleSignInButton() {
       const res = await signInWithGoogle();
       if (res) {
         const token = await res.user.getIdToken();
+        console.log(token);
         await createSession(token);
         router.push("/");
       }

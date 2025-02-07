@@ -18,10 +18,10 @@ function TournamentLayout({
   if (isLoading) return <div>Loading... </div>;
 
   return (
-    <>
+    <div className="m-10">
       <TournamentHeader tournament={data} />
       {children}
-    </>
+    </div>
   );
 }
 
