@@ -27,6 +27,7 @@ export default function RootLayout({
             <Layout_check />
           </div>
           <div className="w-full">
+            <SidebarTrigger />
             <Providers>{children}</Providers>
           </div>
         </SidebarProvider>
