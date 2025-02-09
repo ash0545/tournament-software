@@ -1,8 +1,11 @@
-import React from "react";
+"use client";
 
-async function Page({ params }: { params: Promise<{ tournament: string }> }) {
-  const tournamentID = (await params).tournament;
-  return <div>Test: {tournamentID}</div>;
+import { useFetchTournamentById } from "@/components/api/hooks/useTournaments";
+import React from "react";
+import { use } from "react";
+
+function Page() {
+  return <></>;
 }
 
 export default Page;

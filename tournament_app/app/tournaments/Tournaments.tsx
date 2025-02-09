@@ -21,7 +21,7 @@ function Tournaments({ searchParams }: TournamentsProps) {
   if (error) return <div>Error: {error.message}</div>;
 
   return (
-    <div>
+    <div className="flex flex-col gap-4">
       <TournamentList tournaments={data?.items || []} />
       <PaginationWithLinks
         page={currentPage}
