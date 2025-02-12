@@ -20,6 +20,10 @@ import {
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 
+import { signOut } from "@/components/lib/firebase/auth";
+import router from "next/router";
+import { removeSession } from "@/components/lib/actions/auth-actions";
+
 export default function sidebar() {
   const upperItems = [
     {
@@ -57,6 +61,17 @@ export default function sidebar() {
     },
   ];
 
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      await removeSession();
+      // Redirect to home page or login page after sign out
+      router.push("/login");
+    } catch (error) {
+      console.error("Sign out error:", error);
+    }
+  };
+
   return (
     <Sidebar>
       <SidebarHeader />
@@ -82,7 +97,12 @@ export default function sidebar() {
         <SidebarMenu className="py-6">
           {lowerItems.map((item) => (
             <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton asChild>
+              <SidebarMenuButton
+                asChild
+                onClick={() => {
+                  item.title === "Sign Out" ? handleSignOut() : null;
+                }}
+              >
                 <Link href={item.url}>
                   <item.icon />
                   <span>{item.title}</span>
