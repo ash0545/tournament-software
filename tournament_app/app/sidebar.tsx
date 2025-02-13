@@ -20,11 +20,25 @@ import {
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 
-import { signOut } from "@/components/lib/firebase/auth";
-import router from "next/router";
-import { removeSession } from "@/components/lib/actions/auth-actions";
+import { auth } from "@/components/lib/firebase/client-app";
+import { NavUser } from "./nav-user";
+import { useEffect, useState } from "react";
+import { User } from "firebase/auth";
 
 export default function sidebar() {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((currentUser) => {
+      setUser(currentUser); // set user when firebase has verified auth state
+      setLoading(false);
+    });
+
+    // Cleanup the listener on component unmount
+    return () => unsubscribe();
+  }, []);
+
   const upperItems = [
     {
       title: "Tournaments",
@@ -61,17 +75,6 @@ export default function sidebar() {
     },
   ];
 
-  const handleSignOut = async () => {
-    try {
-      await signOut();
-      await removeSession();
-      // Redirect to home page or login page after sign out
-      router.push("/login");
-    } catch (error) {
-      console.error("Sign out error:", error);
-    }
-  };
-
   return (
     <Sidebar>
       <SidebarHeader />
@@ -94,23 +97,7 @@ export default function sidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <SidebarMenu className="py-6">
-          {lowerItems.map((item) => (
-            <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton
-                asChild
-                onClick={() => {
-                  item.title === "Sign Out" ? handleSignOut() : null;
-                }}
-              >
-                <Link href={item.url}>
-                  <item.icon />
-                  <span>{item.title}</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
-        </SidebarMenu>
+        <NavUser user={user} loading={loading} />
       </SidebarFooter>
     </Sidebar>
   );
