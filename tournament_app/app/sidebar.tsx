@@ -20,24 +20,11 @@ import {
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 
-import { auth } from "@/components/lib/firebase/client-app";
 import { NavUser } from "./nav-user";
-import { useEffect, useState } from "react";
-import { User } from "firebase/auth";
+import { useAuthUser } from "@/components/hooks/useAuthUser";
 
 export default function sidebar() {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((currentUser) => {
-      setUser(currentUser); // set user when firebase has verified auth state
-      setLoading(false);
-    });
-
-    // Cleanup the listener on component unmount
-    return () => unsubscribe();
-  }, []);
+  const { user, isLoading } = useAuthUser();
 
   const upperItems = [
     {
@@ -97,7 +84,7 @@ export default function sidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={user} loading={loading} />
+        <NavUser user={user} loading={isLoading} />
       </SidebarFooter>
     </Sidebar>
   );

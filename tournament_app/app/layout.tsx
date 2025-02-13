@@ -22,16 +22,18 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <SidebarProvider className="flex">
-          <div>
-            <Layout_check />
-          </div>
-          <div className="w-full">
-            <SidebarTrigger />
-            <Providers>{children}</Providers>
-          </div>
-        </SidebarProvider>
-        <Toaster />
+        <Providers>
+          <SidebarProvider className="flex">
+            <div>
+              <Layout_check />
+            </div>
+            <div className="w-full">
+              <SidebarTrigger />
+              {children}
+            </div>
+          </SidebarProvider>
+          <Toaster />
+        </Providers>
       </body>
     </html>
   );
