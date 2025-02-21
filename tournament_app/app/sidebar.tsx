@@ -49,19 +49,6 @@ export default function sidebar() {
     },
   ];
 
-  const lowerItems = [
-    {
-      title: "Settings",
-      url: "#",
-      icon: Settings,
-    },
-    {
-      title: "Sign Out",
-      url: "/login",
-      icon: LogOut,
-    },
-  ];
-
   return (
     <Sidebar>
       <SidebarHeader />
