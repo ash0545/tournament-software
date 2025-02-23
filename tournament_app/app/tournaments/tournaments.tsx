@@ -1,7 +1,7 @@
 "use client";
 
-import { useFetchTournaments } from "@/components/api/hooks/useTournaments";
-import TournamentList from "./TournamentList";
+import { useFetchTournaments } from "@/components/api/hooks/use-tournaments";
+import TournamentList from "./tournaments-list";
 import { PaginationWithLinks } from "@/components/ui/pagination-with-links";
 
 interface TournamentsProps {

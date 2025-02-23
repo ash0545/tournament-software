@@ -21,7 +21,7 @@ import {
 import Link from "next/link";
 
 import { NavUser } from "./nav-user";
-import { useAuthUser } from "@/components/hooks/useAuthUser";
+import { useAuthUser } from "@/components/hooks/use-auth-user";
 
 export default function sidebar() {
   const { user, isLoading } = useAuthUser();

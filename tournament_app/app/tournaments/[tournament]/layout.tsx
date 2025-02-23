@@ -1,9 +1,9 @@
 "use client";
 
 import React, { use } from "react";
-import TournamentHeader from "./TournamentHeader";
-import { useFetchTournamentById } from "@/components/api/hooks/useTournaments";
-import NavBar from "./NavBar";
+import TournamentHeader from "./tournament-header";
+import { useFetchTournamentById } from "@/components/api/hooks/use-tournaments";
+import NavBar from "./navbar";
 
 function TournamentLayout({
   children,

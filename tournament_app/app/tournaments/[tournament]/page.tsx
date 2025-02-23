@@ -1,6 +1,6 @@
 "use client";
 
-import { useFetchTournamentById } from "@/components/api/hooks/useTournaments";
+import { useFetchTournamentById } from "@/components/api/hooks/use-tournaments";
 import React from "react";
 import { use } from "react";
 

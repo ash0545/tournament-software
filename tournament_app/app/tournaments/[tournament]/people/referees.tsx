@@ -4,7 +4,7 @@ import { UserPlus } from "lucide-react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import PersonCard from "./PersonCard";
+import PersonCard from "./person-card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 function Referees() {

@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import {
   getTournaments,
   getTournamentById,
-} from "../services/tournamentService";
+} from "../services/tournament-service";
 
 export const useFetchTournaments = (page: number, size: number) => {
   return useQuery({

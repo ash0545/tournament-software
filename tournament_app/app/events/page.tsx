@@ -21,8 +21,8 @@ import {
 } from "@/components/ui/form";
 
 // Refer interfaces defined in respective files for props structure
-import LabeledInput from "./LabeledInput";
-import LabeledSelect from "./LabeledSelect";
+import LabeledInput from "./labeled-input";
+import LabeledSelect from "./labeled-select";
 
 import * as z from "zod";
 import { useForm } from "react-hook-form";

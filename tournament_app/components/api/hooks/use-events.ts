@@ -3,7 +3,7 @@ import {
   getEvents,
   getEventById,
   getEventsByTournament,
-} from "../services/eventService";
+} from "../services/event-service";
 
 export const useFetchEvents = (page: number, size: number) => {
   return useQuery({

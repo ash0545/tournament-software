@@ -1,6 +1,6 @@
 import React from "react";
-import Players from "./Players";
-import Referees from "./Referees";
+import Players from "./players";
+import Referees from "./referees";
 
 function Page() {
   return (

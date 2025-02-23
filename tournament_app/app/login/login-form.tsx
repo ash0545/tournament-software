@@ -7,7 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import GoogleSignInButton from "./GoogleSignInButton";
+import GoogleSignInButton from "./google-sign-in-button";
 
 export function LoginForm({
   className,

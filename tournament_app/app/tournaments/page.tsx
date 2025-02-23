@@ -5,7 +5,7 @@ import { use } from "react";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 
-import Tournaments from "./Tournaments";
+import Tournaments from "./tournaments";
 import Link from "next/link";
 
 interface PageProps {
